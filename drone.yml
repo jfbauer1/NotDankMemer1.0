@@ -1,0 +1,9 @@
+kind: pipeline
+name: default
+
+steps:
+
+  - name: Build
+    image: maven
+    commands:
+      - mvn package
