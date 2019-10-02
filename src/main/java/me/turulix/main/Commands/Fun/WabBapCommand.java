@@ -8,6 +8,7 @@ package me.turulix.main.Commands.Fun;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import me.turulix.main.DiscordBot;
 import me.turulix.main.UtilClasses.Anotations.DankCommand;
 import me.turulix.main.UtilClasses.Utils;
 import me.turulix.main.i18n.I18nContext;
@@ -34,7 +35,7 @@ public class WabBapCommand extends Command {
     @Override
     protected void execute(@NotNull CommandEvent event, I18nContext context) {
         try {
-            @Nullable String msg = Utils.getUrl("https://www.googleapis.com/youtube/v3/videos?key=AIzaSyB3_v7zwHcCkQEfXQSlQCUXYtXkiEjYssM&part=statistics&id=4gSOMba1UdM");
+            @Nullable String msg = Utils.getUrl("https://www.googleapis.com/youtube/v3/videos?key=" + DiscordBot.instance.tomlManager.getToml().tokens.youtubeToken + "&part=statistics&id=4gSOMba1UdM");
             assert msg == null;
             @Nullable JSONObject obj = new JSONObject(msg);
             Object arr = obj.get("items");

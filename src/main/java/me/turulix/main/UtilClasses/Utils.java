@@ -60,6 +60,19 @@ public class Utils {
         return null;
     }
 
+    public static String getUrl(String URLString, String AuthToken) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(URLString).header("Authorization", AuthToken).get().build();
+        Response response;
+        try {
+            response = client.newCall(request).execute();
+            return new String(response.body().bytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            Logger.error(e);
+        }
+        return null;
+    }
+
     public static InputStream getMeme(String domain, String text, String avatar1, String avatar2, String username1, String username2, String Token) {
         try {
             JSONObject jsonObject = new JSONObject("{}");
