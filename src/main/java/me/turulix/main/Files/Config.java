@@ -18,6 +18,8 @@ public class Config {
         public String imageServerToken = "";
         public String DiscordBotsToken = "";
         public String mashapeToken = "";
+        public String spotifyToken = "";
+        public String youtubeToken = "";
     }
 
     public class SQL {

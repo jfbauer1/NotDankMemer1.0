@@ -151,7 +151,7 @@ public class DiscordBot implements Runnable {
             } else {
                 shardManagerBuilder.setShardsTotal(1);
             }
-            shardManagerBuilder.setGame(Game.playing("Stating bot."));
+            shardManagerBuilder.setGame(Game.playing("Starting bot."));
             shardManagerBuilder.setWebsocketFactory(new WebSocketFactory().setVerifyHostname(false));
             try {
                 registerStuff.shardManager = shardManagerBuilder.build();

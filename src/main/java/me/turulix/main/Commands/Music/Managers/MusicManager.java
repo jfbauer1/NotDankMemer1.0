@@ -11,15 +11,20 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import me.turulix.main.DiscordBot;
+import me.turulix.main.UtilClasses.Utils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class MusicManager {
@@ -39,8 +44,51 @@ public class MusicManager {
     public void Play(@NotNull CommandEvent e) {
         @NotNull String[] command = e.getMessage().getContentDisplay().split(" ", 2);
         Guild guild = e.getGuild();
+        Pattern spotifyPatter = Pattern.compile("(https://|http://)(open.spotify.com/track/)([a-zA-Z0-9]+).*");
+        Matcher spotifyMatcher = spotifyPatter.matcher(command[1]);
+        Pattern youtubePatter = Pattern.compile("(https://|http://)((www\\.|)youtube.com(/watch\\?v=)|youtu.be/)(.*)");
+        Matcher youtubeMatcher = youtubePatter.matcher(command[1]);
+        String youtubeURL = command[1];
+        if (spotifyMatcher.matches()) {
+            String apiURL = "https://api.spotify.com/v1/tracks/" + spotifyMatcher.group(3);
+            String trackData = Utils.getUrl(apiURL, "Bearer " + DiscordBot.instance.tomlManager.getToml().tokens.spotifyToken);
+            //Get Songtitle from Spotify And Check Youtube for song.
+            //TODO Might be null check
+            JSONObject obj = new JSONObject(trackData);
+            String songname = obj.getString("name");
+            String artist = obj.getJSONArray("artists").getJSONObject(0).getString("name");
+            //----------------------------------------Search Youtube--------------------------------------------//
+            String searchQuarry = (artist + " - " + songname);
+            String youtubeJSON = Utils.getUrl(
+                    "https://www.googleapis.com/youtube/v3/search?key=" +
+                            DiscordBot.instance.tomlManager.getToml().tokens.youtubeToken +
+                            "&part=id&q=" + searchQuarry + "&maxResults=1"
+            );
+            //TODO Might be null check
+            obj = new JSONObject(youtubeJSON);
+            JSONArray array = obj.getJSONArray("items");
+            if (!array.isEmpty()) {
+                youtubeURL = "https://www.youtube.com/watch?v=" + array.getJSONObject(0).getJSONObject("id").getString("videoId");
+            }
+        } else if (youtubeMatcher.matches()) {
+            youtubeURL = command[1];
+        } else {
+            String searchQuarry = command[1];
+            String youtubeJSON = Utils.getUrl(
+                    "https://www.googleapis.com/youtube/v3/search?key=" +
+                            DiscordBot.instance.tomlManager.getToml().tokens.youtubeToken +
+                            "&part=id&q=" + searchQuarry + "&maxResults=1"
+            );
+            //TODO Might be null check
+            JSONObject obj = new JSONObject(youtubeJSON);
+            JSONArray array = obj.getJSONArray("items");
+            if (!array.isEmpty()) {
+                youtubeURL = "https://www.youtube.com/watch?v=" + array.getJSONObject(0).getJSONObject("id").getString("videoId");
+            }
+        }
+        //TODO: Get URL
         if ((guild != null) && (command.length == 2)) {
-            loadAndPlay(command[1], e);
+            loadAndPlay(youtubeURL, e);
         }
     }
 
@@ -55,13 +103,6 @@ public class MusicManager {
         Guild guild = e.getGuild();
         if (guild != null) {
             skipTrack(e.getTextChannel());
-        }
-    }
-
-    public void Volume(@NotNull CommandEvent e) {
-        Guild guild = e.getGuild();
-        if (guild != null) {
-            volume(e);
         }
     }
 
@@ -125,8 +166,8 @@ public class MusicManager {
             }
 
             @Override
-            public void loadFailed(@NotNull FriendlyException e) {
-                //.sendMessage("Could not play: " + e.getMessage()).queue();
+            public void loadFailed(@NotNull FriendlyException ex) {
+                e.reply("Could not play: " + e.getMessage());
             }
         });
     }
@@ -138,41 +179,11 @@ public class MusicManager {
 
     private void currentsong(CommandEvent e) {
         GuildMusicManager musicManager = getGuildAudioPlayer(e.getGuild());
-        if (musicManager.player.isPaused()) {
-            e.reply("Im not playing anything...");
-            return;
-        }
-        if (musicManager.player.getPlayingTrack() == null) {
+        if (musicManager.player.isPaused() || musicManager.player.getPlayingTrack() == null) {
             e.reply("Im not playing anything...");
             return;
         }
         e.reply("Now playing: " + musicManager.player.getPlayingTrack().getInfo().title + " By: " + musicManager.player.getPlayingTrack().getInfo().author);
-    }
-
-    private void volume(CommandEvent e) {
-        GuildMusicManager musicManager = getGuildAudioPlayer(e.getGuild());
-        String Message = e.getMessage().getContentRaw();
-        @NotNull String[] args = Message.split(" ");
-        if (args.length == 1) {
-            e.getChannel().sendMessage("Volume: " + musicManager.player.getVolume()).queue();
-        }
-        if (args.length == 2) {
-            try {
-                int newVolume = Integer.parseInt(args[1]);
-                int oldVolume = musicManager.player.getVolume();
-                if ((newVolume <= 150) && (newVolume >= 0)) {
-                    e.getChannel().sendMessage("Volume set to: " + newVolume + " (" + oldVolume + ")").queue();
-                    musicManager.player.setVolume(newVolume);
-                } else {
-                    e.reply("Volume range is 0-150");
-                }
-            } catch (Exception er) {
-                e.reply("Usage: !volume <volume>");
-            }
-        }
-        if (args.length > 2) {
-            e.reply("Usage: !volume <volume>");
-        }
     }
 
     private void skipTrack(TextChannel channel) {
