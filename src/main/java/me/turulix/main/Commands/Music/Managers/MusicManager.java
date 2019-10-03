@@ -51,11 +51,13 @@ public class MusicManager {
         String youtubeURL = command[1];
 
         if (spotifyMatcher.matches()) {
-            String apiURL = "https://api.spotify.com/v1/tracks/" + spotifyMatcher.group(3);
+            e.reply("Requests via Spotify are not Available yet!");
+            return;
+            /*String apiURL = "https://api.spotify.com/v1/tracks/" + spotifyMatcher.group(3);
             //TODO: Spotify Oauth2 is only valid for 1h find a better way / Refresh tokens! Maybe use discord to get Songname + Artist
             String trackData = Utils.getUrl(apiURL, "Bearer " + DiscordBot.instance.tomlManager.getToml().tokens.spotifyToken);
             //Get Songtitle from Spotify And Check Youtube for song.
-            //TODO Might be null check
+            //TODO: Might be null check
             JSONObject obj = new JSONObject(trackData);
             String songname = obj.getString("name");
             String artist = obj.getJSONArray("artists").getJSONObject(0).getString("name");
@@ -66,12 +68,12 @@ public class MusicManager {
                             DiscordBot.instance.tomlManager.getToml().tokens.youtubeToken +
                             "&part=id&q=" + searchQuarry + "&maxResults=1&type=video"
             );
-            //TODO Might be null check
+            //TODO: Might be null check
             obj = new JSONObject(youtubeJSON);
             JSONArray array = obj.getJSONArray("items");
             if (!array.isEmpty()) {
                 youtubeURL = "https://www.youtube.com/watch?v=" + array.getJSONObject(0).getJSONObject("id").getString("videoId");
-            }
+            } */
         } else if (youtubeMatcher.matches()) {
             youtubeURL = command[1];
         } else {
@@ -81,7 +83,7 @@ public class MusicManager {
                             DiscordBot.instance.tomlManager.getToml().tokens.youtubeToken +
                             "&part=id&q=" + searchQuarry + "&maxResults=1&type=video"
             );
-            //TODO Might be null check
+            //TODO: Might be null check
             JSONObject obj = new JSONObject(youtubeJSON);
             JSONArray array = obj.getJSONArray("items");
             if (!array.isEmpty()) {
