@@ -52,7 +52,7 @@ public class DiscordBot implements Runnable {
         tomlManager = new TomlManager();
         Locale.setDefault(new Locale("en", "US"));
         System.out.println("FilePath: " + registerStuff.filePath);
-        if (registerStuff.filePath.equalsIgnoreCase("/root/NotDankMemer/AutoUpdate/notdankmemer")) {
+        if (registerStuff.filePath.equalsIgnoreCase("/root/NotDankMemer/AutoUpdate/NotDankMemer")) {
             registerStuff.filePath = "/root/NotDankMemer/Bot/";
             tomlManager.getToml().testMode = true;
         }

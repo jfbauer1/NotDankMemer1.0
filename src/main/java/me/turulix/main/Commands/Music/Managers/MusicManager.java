@@ -62,7 +62,7 @@ public class MusicManager {
             String youtubeJSON = Utils.getUrl(
                     "https://www.googleapis.com/youtube/v3/search?key=" +
                             DiscordBot.instance.tomlManager.getToml().tokens.youtubeToken +
-                            "&part=id&q=" + searchQuarry + "&maxResults=1"
+                            "&part=id&q=" + searchQuarry + "&maxResults=1&type=video"
             );
             //TODO Might be null check
             obj = new JSONObject(youtubeJSON);
@@ -77,7 +77,7 @@ public class MusicManager {
             String youtubeJSON = Utils.getUrl(
                     "https://www.googleapis.com/youtube/v3/search?key=" +
                             DiscordBot.instance.tomlManager.getToml().tokens.youtubeToken +
-                            "&part=id&q=" + searchQuarry + "&maxResults=1"
+                            "&part=id&q=" + searchQuarry + "&maxResults=1&type=video"
             );
             //TODO Might be null check
             JSONObject obj = new JSONObject(youtubeJSON);
