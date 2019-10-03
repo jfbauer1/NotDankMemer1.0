@@ -49,8 +49,10 @@ public class MusicManager {
         Pattern youtubePatter = Pattern.compile("(https://|http://)((www\\.|)youtube.com(/watch\\?v=)|youtu.be/)(.*)");
         Matcher youtubeMatcher = youtubePatter.matcher(command[1]);
         String youtubeURL = command[1];
+
         if (spotifyMatcher.matches()) {
             String apiURL = "https://api.spotify.com/v1/tracks/" + spotifyMatcher.group(3);
+            //TODO: Spotify Oauth2 is only valid for 1h find a better way / Refresh tokens! Maybe use discord to get Songname + Artist
             String trackData = Utils.getUrl(apiURL, "Bearer " + DiscordBot.instance.tomlManager.getToml().tokens.spotifyToken);
             //Get Songtitle from Spotify And Check Youtube for song.
             //TODO Might be null check
@@ -86,7 +88,6 @@ public class MusicManager {
                 youtubeURL = "https://www.youtube.com/watch?v=" + array.getJSONObject(0).getJSONObject("id").getString("videoId");
             }
         }
-        //TODO: Get URL
         if ((guild != null) && (command.length == 2)) {
             loadAndPlay(youtubeURL, e);
         }
