@@ -21,7 +21,7 @@ public class SayCommand extends Command {
         this.help = "I say what you want me to say";
         this.arguments = "<Message>";
         this.category = new Command.Category("Fun");
-        this.botPermissions = new Permission[]{Permission.MESSAGE_WRITE};
+        this.botPermissions = new Permission[]{Permission.MESSAGE_WRITE, Permission.MESSAGE_MANAGE};
         this.cooldown = 5;
         this.cooldownScope = CooldownScope.USER;
         this.autoTest = false;

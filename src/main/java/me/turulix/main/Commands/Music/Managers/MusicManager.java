@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import me.turulix.main.DiscordBot;
+import me.turulix.main.OAuth2.SpotifyOAuth2Token;
 import me.turulix.main.UtilClasses.Utils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -51,11 +52,9 @@ public class MusicManager {
         String youtubeURL = command[1];
 
         if (spotifyMatcher.matches()) {
-            e.reply("Requests via Spotify are not Available yet!");
-            return;
-            /*String apiURL = "https://api.spotify.com/v1/tracks/" + spotifyMatcher.group(3);
+            String apiURL = "https://api.spotify.com/v1/tracks/" + spotifyMatcher.group(3);
             //TODO: Spotify Oauth2 is only valid for 1h find a better way / Refresh tokens! Maybe use discord to get Songname + Artist
-            String trackData = Utils.getUrl(apiURL, "Bearer " + DiscordBot.instance.tomlManager.getToml().tokens.spotifyToken);
+            String trackData = Utils.getUrl(apiURL, "Bearer " + SpotifyOAuth2Token.getAccessToken());
             //Get Songtitle from Spotify And Check Youtube for song.
             //TODO: Might be null check
             JSONObject obj = new JSONObject(trackData);
@@ -73,7 +72,7 @@ public class MusicManager {
             JSONArray array = obj.getJSONArray("items");
             if (!array.isEmpty()) {
                 youtubeURL = "https://www.youtube.com/watch?v=" + array.getJSONObject(0).getJSONObject("id").getString("videoId");
-            } */
+            }
         } else if (youtubeMatcher.matches()) {
             youtubeURL = command[1];
         } else {
