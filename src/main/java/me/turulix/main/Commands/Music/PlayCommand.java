@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 @DankCommand
 public class PlayCommand extends Command {
+    public static PlayCommand instance;
     public PlayCommand() {
         this.name = "play";
         this.arguments = "<Link>";
@@ -23,6 +24,7 @@ public class PlayCommand extends Command {
         this.help = "Adds the song to the songlist";
         this.botPermissions = new Permission[]{Permission.MESSAGE_WRITE, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK};
         this.autoTest = false;
+        instance = this;
     }
 
     @Override

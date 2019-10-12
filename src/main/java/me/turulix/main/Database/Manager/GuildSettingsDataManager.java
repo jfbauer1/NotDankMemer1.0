@@ -13,6 +13,7 @@ import me.turulix.main.DiscordBot;
 import me.turulix.main.UtilClasses.SubClasses.DatabaseInterface;
 import me.turulix.main.UtilClasses.SubClasses.FixedCache;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
@@ -70,6 +71,7 @@ public class GuildSettingsDataManager extends DatabaseInterface implements Guild
     }
 
     public class GuildSettings implements GuildSettingsProvider {
+        private long modlog;
         @Nullable
         private String prefix;
         private Guild guild;
@@ -87,8 +89,8 @@ public class GuildSettingsDataManager extends DatabaseInterface implements Guild
             }
             prefix = document.containsKey("prefix") ? document.getString("prefix") : DiscordBot.instance.registerStuff.commandClient.getPrefix();
             lang = document.containsKey("language") ? document.getString("language") : "en_US";
+            modlog = document.containsKey("modlog") ? document.getLong("modlog") : 0L;
         }
-
 
         public String getPrefix() {
             return prefix;
@@ -110,6 +112,16 @@ public class GuildSettingsDataManager extends DatabaseInterface implements Guild
         public void setLang(String lang) {
             this.lang = lang;
             update(filters, "lang", lang);
+        }
+
+        public void setModlog(Long id) {
+            this.modlog = id;
+            update(filters, "modlog", id);
+        }
+
+        public void setModlog(TextChannel channel) {
+            this.modlog = channel.getIdLong();
+            update(filters, "modlog", channel.getIdLong());
         }
 
 
