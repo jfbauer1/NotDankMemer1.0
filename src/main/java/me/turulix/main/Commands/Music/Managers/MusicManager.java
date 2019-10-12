@@ -45,7 +45,6 @@ public class MusicManager {
 
     public void Play(@NotNull CommandEvent e) {
         @NotNull String[] command = e.getMessage().getContentDisplay().split(" ", 2);
-
         if (command.length != 2) {
             TextUtilities.SendUsage(e, PlayCommand.instance);
             return;
