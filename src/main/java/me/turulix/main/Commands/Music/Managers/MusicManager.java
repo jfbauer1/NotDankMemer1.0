@@ -21,7 +21,6 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -53,49 +52,24 @@ public class MusicManager {
         Guild guild = e.getGuild();
         Pattern spotifyPatter = Pattern.compile("(https://|http://)(open.spotify.com/track/)([a-zA-Z0-9]+).*");
         Matcher spotifyMatcher = spotifyPatter.matcher(command[1]);
-        Pattern youtubePatter = Pattern.compile("(https://|http://)((www\\.|)youtube.com(/watch\\?v=)|youtu.be/)(.*)");
+        Pattern youtubePatter = Pattern.compile("(https://|http://)((www\\.|music\\.|)youtube.com(/watch\\?v=)|youtu.be/)(.*)");
         Matcher youtubeMatcher = youtubePatter.matcher(command[1]);
-        String youtubeURL = command[1];
+        String LavaSearch = command[1];
 
         if (spotifyMatcher.matches()) {
             String apiURL = "https://api.spotify.com/v1/tracks/" + spotifyMatcher.group(3);
             String trackData = Utils.getUrl(apiURL, "Bearer " + SpotifyOAuth2Token.getAccessToken());
-            //Get Songtitle from Spotify And Check Youtube for song.
             //TODO: Might be null check
             JSONObject obj = new JSONObject(trackData);
             String songname = obj.getString("name");
             String artist = obj.getJSONArray("artists").getJSONObject(0).getString("name");
-            //----------------------------------------Search Youtube--------------------------------------------//
             String searchQuarry = (artist + " - " + songname);
-            String youtubeJSON = Utils.getUrl(
-                    "https://www.googleapis.com/youtube/v3/search?key=" +
-                            DiscordBot.instance.tomlManager.getToml().tokens.youtubeToken +
-                            "&part=id&q=" + searchQuarry + "&maxResults=1&type=video"
-            );
-            //TODO: Might be null check
-            obj = new JSONObject(youtubeJSON);
-            JSONArray array = obj.getJSONArray("items");
-            if (!array.isEmpty()) {
-                youtubeURL = "https://www.youtube.com/watch?v=" + array.getJSONObject(0).getJSONObject("id").getString("videoId");
-            }
-        } else if (youtubeMatcher.matches()) {
-            youtubeURL = command[1];
-        } else {
-            String searchQuarry = command[1];
-            String youtubeJSON = Utils.getUrl(
-                    "https://www.googleapis.com/youtube/v3/search?key=" +
-                            DiscordBot.instance.tomlManager.getToml().tokens.youtubeToken +
-                            "&part=id&q=" + searchQuarry + "&maxResults=1&type=video"
-            );
-            //TODO: Might be null check
-            JSONObject obj = new JSONObject(youtubeJSON);
-            JSONArray array = obj.getJSONArray("items");
-            if (!array.isEmpty()) {
-                youtubeURL = "https://www.youtube.com/watch?v=" + array.getJSONObject(0).getJSONObject("id").getString("videoId");
-            }
+            LavaSearch = "ytsearch:" + searchQuarry;
+        } else if (!youtubeMatcher.matches() && !spotifyMatcher.matches()) {
+            LavaSearch = "ytsearch:" + command[1];
         }
-        if ((guild != null) && (command.length == 2)) {
-            loadAndPlay(youtubeURL, e);
+        if (guild != null) {
+            loadAndPlay(LavaSearch, e);
         }
     }
 
@@ -150,6 +124,7 @@ public class MusicManager {
     private void loadAndPlay(final String trackUrl, @NotNull final CommandEvent e) {
         final GuildMusicManager musicManager = getGuildAudioPlayer(e.getGuild());
         this.playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
+
             @Override
             public void trackLoaded(@NotNull AudioTrack audioTrack) {
                 e.reply("Adding to queue " + audioTrack.getInfo().title);
@@ -162,7 +137,7 @@ public class MusicManager {
                 if (firstTrack == null) {
                     firstTrack = audioPlaylist.getTracks().get(0);
                 }
-                e.reply("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + audioPlaylist.getName() + ")");
+                e.reply("Adding to queue " + firstTrack.getInfo().title);
 
                 MusicManager.this.play(e.getGuild(), musicManager, firstTrack, e);
             }
