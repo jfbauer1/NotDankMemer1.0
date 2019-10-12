@@ -10,8 +10,10 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import me.turulix.main.Commands.Music.PlayCommand;
 import me.turulix.main.DiscordBot;
 import me.turulix.main.OAuth2.SpotifyOAuth2Token;
+import me.turulix.main.UtilClasses.TextUtilities;
 import me.turulix.main.UtilClasses.Utils;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -44,6 +46,10 @@ public class MusicManager {
 
     public void Play(@NotNull CommandEvent e) {
         @NotNull String[] command = e.getMessage().getContentDisplay().split(" ", 2);
+        if (command.length != 2) {
+            TextUtilities.SendUsage(e, PlayCommand.instance);
+            return;
+        }
         Guild guild = e.getGuild();
         Pattern spotifyPatter = Pattern.compile("(https://|http://)(open.spotify.com/track/)([a-zA-Z0-9]+).*");
         Matcher spotifyMatcher = spotifyPatter.matcher(command[1]);
@@ -53,7 +59,6 @@ public class MusicManager {
 
         if (spotifyMatcher.matches()) {
             String apiURL = "https://api.spotify.com/v1/tracks/" + spotifyMatcher.group(3);
-            //TODO: Spotify Oauth2 is only valid for 1h find a better way / Refresh tokens! Maybe use discord to get Songname + Artist
             String trackData = Utils.getUrl(apiURL, "Bearer " + SpotifyOAuth2Token.getAccessToken());
             //Get Songtitle from Spotify And Check Youtube for song.
             //TODO: Might be null check

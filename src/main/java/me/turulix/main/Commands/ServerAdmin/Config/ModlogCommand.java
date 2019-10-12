@@ -31,14 +31,8 @@ public class ModlogCommand extends Command {
             GuildSettingsDataManager.GuildSettings settings = DiscordBot.instance.registerStuff.database.guildSettingsDataManager.getSettings(event.getGuild());
             try {
                 assert settings != null;
-
                 TextChannel channel = event.getMessage().getMentionedChannels().get(0);
-                //TODO: Fix this
-                //MongoBuilder builder = new MongoBuilder();
-                //builder.set("Modlog", channel.getIdLong());
-
-                //MongoHelper.update("GuildSettings", new BasicDBObject("_id", event.getGuild().getIdLong()), builder.build());
-
+                settings.setModlog(channel);
                 if (channel.canTalk()) {
                     event.replySuccess("Modlog Channel changed!");
                 } else {
