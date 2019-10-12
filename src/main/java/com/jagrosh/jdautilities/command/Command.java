@@ -268,8 +268,8 @@ public abstract class Command extends DatabaseInterface {
             }
 
             //user perms
-            for (Permission p : userPermissions) {
-                if (!event.isOwner()) {
+            if (!event.isOwner()) {
+                for (Permission p : userPermissions) {
                     if (p.isChannel()) {
                         if (!event.getMember().hasPermission(event.getTextChannel(), p)) {
                             terminate(event, String.format(USER_PERM, event.getClient().getError(), p.name(), "Channel"));
