@@ -48,8 +48,7 @@ public class PornhubCommand extends Command {
 
     @Override
     protected void execute(CommandEvent event, I18nContext context) {
-        //+pornhub Cutie
-        if (!event.getArgs().trim().equals("")) {
+        if (event.getArgs().trim().equals("")) {
             TextUtilities.SendUsage(event, this);
             return;
         }
