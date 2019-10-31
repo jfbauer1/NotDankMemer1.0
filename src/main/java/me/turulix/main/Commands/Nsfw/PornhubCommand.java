@@ -74,7 +74,7 @@ public class PornhubCommand extends Command {
             mainFrame = doc.getElementById("videoCategory");
         }
 
-        Elements videos = mainFrame.getElementById("videoSearchResult").getElementsByClass(" js-pop videoblock full-height videoBox");
+        Elements videos = mainFrame.getElementById("videoSearchResult").getElementsByClass(" js-pop videoblock videoBox");
         for (Element video : videos) {
             String videoString = video.toString().replace("\n", "".trim());
 
