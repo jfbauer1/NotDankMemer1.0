@@ -1,4 +1,5 @@
-[![Build Status](https://cloud.drone.io/api/badges/turulix/NotDankMemer/status.svg)](https://cloud.drone.io/turulix/NotDankMemer)[![forthebadge](https://forthebadge.com/images/badges/kinda-sfw.svg)](https://forthebadge.com)
+[![Build Status](https://cloud.drone.io/api/badges/turulix/NotDankMemer/status.svg)](https://cloud.drone.io/turulix/NotDankMemer)
+[![forthebadge](https://forthebadge.com/images/badges/kinda-sfw.svg)](https://forthebadge.com)
 
 ## How to get this setup
 - Clone the project.
