@@ -9,9 +9,8 @@ package me.turulix.main.UtilClasses;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import me.turulix.main.DiscordBot;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -36,11 +35,9 @@ public class TextUtilities {
     }
 
     public static void sendEmbedLocalFile(@NotNull InputStream in, CommandEvent event, @NotNull String fileName) {
-        @NotNull MessageBuilder message = new MessageBuilder();
         @NotNull EmbedBuilder embed = new EmbedBuilder();
         embed.setImage("attachment://" + fileName).setColor(new Color(26, 255, 41));
-        message.setEmbed(embed.build());
-        event.getEvent().getChannel().sendFile(in, fileName, message.build()).queue();
+        event.getEvent().getChannel().sendFile(in, fileName).embed(embed.build()).queue();
 
     }
 

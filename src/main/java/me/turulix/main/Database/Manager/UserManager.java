@@ -10,8 +10,8 @@ package me.turulix.main.Database.Manager;
 import com.mongodb.client.model.Filters;
 import me.turulix.main.Logger;
 import me.turulix.main.UtilClasses.SubClasses.DatabaseInterface;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 

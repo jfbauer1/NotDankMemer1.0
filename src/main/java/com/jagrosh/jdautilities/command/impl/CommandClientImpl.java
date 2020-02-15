@@ -13,21 +13,20 @@ import com.jagrosh.jdautilities.commons.utils.SafeIdUtil;
 import me.turulix.main.Database.Database;
 import me.turulix.main.DiscordBot;
 import me.turulix.main.i18n.I18nContext;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.entities.impl.JDAImpl;
-import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.events.ShutdownEvent;
-import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageDeleteEvent;
-import net.dv8tion.jda.core.hooks.EventListener;
-import net.dv8tion.jda.core.requests.Requester;
-import net.dv8tion.jda.core.utils.Checks;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.ShutdownEvent;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.internal.requests.Requester;
+import net.dv8tion.jda.internal.utils.Checks;
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -49,10 +48,10 @@ import java.util.stream.Collectors;
 /**
  * An implementation of {@link com.jagrosh.jdautilities.command.CommandClient CommandClient} to be used by a bot.
  *
- * <p>This is a listener usable with {@link net.dv8tion.jda.core.JDA JDA}, as it implements
- * {@link net.dv8tion.jda.core.hooks.EventListener EventListener} in order to catch and use different kinds of {@link
- * net.dv8tion.jda.core.events.Event Event}s. The primary usage of this is where the CommandClient implementation takes
- * {@link net.dv8tion.jda.core.events.message.MessageReceivedEvent MessageReceivedEvent}s, and automatically processes
+ * <p>This is a listener usable with {@link net.dv8tion.jda.api.JDA JDA}, as it implements
+ * {@link net.dv8tion.jda.api.hooks.EventListener EventListener} in order to catch and use different kinds of {@link
+ * net.dv8tion.jda.api.events.Event Event}s. The primary usage of this is where the CommandClient implementation takes
+ * {@link net.dv8tion.jda.api.events.message.MessageReceivedEvent MessageReceivedEvent}s, and automatically processes
  * arguments, and provide them to a {@link com.jagrosh.jdautilities.command.Command Command} for running and execution.
  *
  * @author John Grosh (jagrosh)
@@ -63,7 +62,6 @@ public class CommandClientImpl implements CommandClient, EventListener {
     private static final String DEFAULT_PREFIX = "@mention";
 
     private final OffsetDateTime start;
-    private final Game game;
     private final OnlineStatus status;
     private final String ownerId;
     private final String[] coOwnerIds;
@@ -92,7 +90,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     private CommandListener listener = null;
     private int totalGuilds;
 
-    public CommandClientImpl(String ownerId, String[] coOwnerIds, String prefix, String altprefix, Game game, OnlineStatus status, String serverInvite, String success, String warning, String error, String carbonKey, String botsKey, String botsOrgKey, ArrayList<Command> commands, boolean useHelp, Consumer<CommandEvent> helpConsumer, String helpWord, ScheduledExecutorService executor, int linkedCacheSize, AnnotatedModuleCompiler compiler, GuildSettingsManager manager) {
+    public CommandClientImpl(String ownerId, String[] coOwnerIds, String prefix, String altprefix, OnlineStatus status, String serverInvite, String success, String warning, String error, String carbonKey, String botsKey, String botsOrgKey, ArrayList<Command> commands, boolean useHelp, Consumer<CommandEvent> helpConsumer, String helpWord, ScheduledExecutorService executor, int linkedCacheSize, AnnotatedModuleCompiler compiler, GuildSettingsManager manager) {
         Checks.check(ownerId != null, "Owner ID was set null or not set! Please provide an User ID to register as the owner!");
 
         if (!SafeIdUtil.checkId(ownerId))
@@ -112,7 +110,6 @@ public class CommandClientImpl implements CommandClient, EventListener {
         this.prefix = prefix == null || prefix.isEmpty() ? DEFAULT_PREFIX : prefix;
         this.altprefix = altprefix == null || altprefix.isEmpty() ? null : altprefix;
         this.textPrefix = prefix;
-        this.game = game;
         this.status = status;
         this.serverInvite = serverInvite;
         this.success = success == null ? "" : success;
@@ -347,11 +344,9 @@ public class CommandClientImpl implements CommandClient, EventListener {
         return linkMap != null;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <S> S getSettingsFor(Guild guild) {
+    public <S> S getSettingsFor(Guild var1) {
         if (manager == null) return null;
-        return (S) manager.getSettings(guild);
+        return (S) manager.getSettings(var1);
     }
 
     @SuppressWarnings("unchecked")
@@ -361,14 +356,14 @@ public class CommandClientImpl implements CommandClient, EventListener {
     }
 
     @Override
-    public void onEvent(Event event) {
+    public void onEvent(GenericEvent event) {
         if (event instanceof MessageReceivedEvent) onMessageReceived((MessageReceivedEvent) event);
 
         else if (event instanceof GuildMessageDeleteEvent && usesLinkedDeletion())
             onMessageDelete((GuildMessageDeleteEvent) event);
 
         else if (event instanceof GuildJoinEvent) {
-            if (((GuildJoinEvent) event).getGuild().getSelfMember().getJoinDate().plusMinutes(10).isAfter(OffsetDateTime.now()))
+            if (((GuildJoinEvent) event).getGuild().getSelfMember().getTimeJoined().plusMinutes(10).isAfter(OffsetDateTime.now()))
                 sendStats(event.getJDA());
         } else if (event instanceof GuildLeaveEvent) sendStats(event.getJDA());
         else if (event instanceof ReadyEvent) onReady((ReadyEvent) event);
@@ -386,8 +381,8 @@ public class CommandClientImpl implements CommandClient, EventListener {
             return;
         }
         textPrefix = prefix.equals(DEFAULT_PREFIX) ? "@" + event.getJDA().getSelfUser().getName() + " " : prefix;
-        event.getJDA().getPresence().setPresence(status == null ? OnlineStatus.ONLINE : status, game == null ? null : "default".equals(game.getName()) ? Game.playing("Type " + textPrefix + helpWord) : game);
-
+        //event.getJDA().getPresence().setPresence(status == null ? OnlineStatus.ONLINE : status, game == null ? null : "default".equals(game.getName()) ? Game.playing("Type " + textPrefix + helpWord) : game);
+        event.getJDA().getPresence().setPresence(OnlineStatus.ONLINE, Activity.playing("Type " + textPrefix + helpWord));
         // Start SettingsManager if necessary
         GuildSettingsManager<?> manager = getSettingsManager();
         if (manager != null) manager.init();
@@ -476,7 +471,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     }
 
     private void sendStats(JDA jda) {
-        OkHttpClient client = ((JDAImpl) jda).getHttpClient();
+        OkHttpClient client = jda.getHttpClient();
 
         if (carbonKey != null) {
             FormBody.Builder bodyBuilder = new FormBody.Builder().add("key", carbonKey).add("servercount", Integer.toString(jda.getGuilds().size()));

@@ -13,7 +13,7 @@ import me.turulix.main.UtilClasses.Anotations.DankCommand;
 import me.turulix.main.UtilClasses.SubClasses.SubClasses;
 import me.turulix.main.UtilClasses.TextUtilities;
 import me.turulix.main.i18n.I18nContext;
-import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.api.EmbedBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

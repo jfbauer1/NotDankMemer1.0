@@ -11,8 +11,8 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import me.turulix.main.UtilClasses.Anotations.DankCommand;
 import me.turulix.main.UtilClasses.Utils;
 import me.turulix.main.i18n.I18nContext;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 

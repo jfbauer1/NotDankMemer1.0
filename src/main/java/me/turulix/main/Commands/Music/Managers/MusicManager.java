@@ -15,11 +15,11 @@ import me.turulix.main.DiscordBot;
 import me.turulix.main.OAuth2.SpotifyOAuth2Token;
 import me.turulix.main.UtilClasses.TextUtilities;
 import me.turulix.main.UtilClasses.Utils;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.managers.AudioManager;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 

@@ -12,8 +12,8 @@ import com.mongodb.client.model.Filters;
 import me.turulix.main.DiscordBot;
 import me.turulix.main.UtilClasses.SubClasses.DatabaseInterface;
 import me.turulix.main.UtilClasses.SubClasses.FixedCache;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ public class GuildSettingsDataManager extends DatabaseInterface implements Guild
         collectionName = "GuildSettings";
     }
 
-    @Override
+
     public GuildSettings getSettings(@NotNull Guild guild) {
         return returnSettings(guild);
     }

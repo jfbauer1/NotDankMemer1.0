@@ -8,13 +8,11 @@ package com.jagrosh.jdautilities.command;
 
 import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
 import com.jagrosh.jdautilities.commons.utils.SafeIdUtil;
-import net.dv8tion.jda.client.entities.Group;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.exceptions.PermissionException;
-import net.dv8tion.jda.core.utils.Checks;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.PermissionException;
+import net.dv8tion.jda.internal.utils.Checks;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -147,10 +145,10 @@ public class CommandEvent {
         this.event.getChannel().sendFile(file, filename, null).queue();
     }
 
-    public void reply(String message, File file, String filename) {
+    /*public void reply(String message, File file, String filename) {
         Message msg = message == null ? null : new MessageBuilder().append(CommandEvent.splitMessage(message).get(0)).build();
         this.event.getChannel().sendFile(file, filename, msg).queue();
-    }
+    }*/
 
     public /* varargs */ void replyFormatted(String format, Object... args) {
         this.sendMessage(this.event.getChannel(), String.format(format, args));
@@ -164,14 +162,14 @@ public class CommandEvent {
         }
     }
 
-    public void replyOrAlternate(String message, File file, String filename, String alternateMessage) {
+    /*public void replyOrAlternate(String message, File file, String filename, String alternateMessage) {
         Message msg = message == null ? null : new MessageBuilder().append(CommandEvent.splitMessage(message).get(0)).build();
         try {
             this.event.getChannel().sendFile(file, filename, msg).queue();
         } catch (Exception e) {
             this.reply(alternateMessage);
         }
-    }
+    }*/
 
     public void replyInDm(String message) {
         if (this.event.isFromType(ChannelType.PRIVATE)) {
@@ -245,14 +243,14 @@ public class CommandEvent {
         }
     }
 
-    public void replyInDm(String message, File file, String filename) {
+    /*public void replyInDm(String message, File file, String filename) {
         if (this.event.isFromType(ChannelType.PRIVATE)) {
             this.reply(message, file, filename);
         } else {
             Message msg = message == null ? null : new MessageBuilder().append(CommandEvent.splitMessage(message).get(0)).build();
             this.event.getAuthor().openPrivateChannel().queue(pc -> pc.sendFile(file, filename, msg).queue());
         }
-    }
+    }*/
 
     public void replySuccess(String message) {
         this.reply(this.client.getSuccess() + " " + message);
@@ -407,10 +405,6 @@ public class CommandEvent {
 
     public ChannelType getChannelType() {
         return this.event.getChannelType();
-    }
-
-    public Group getGroup() {
-        return this.event.getGroup();
     }
 
     public Guild getGuild() {

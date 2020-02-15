@@ -8,8 +8,7 @@ package com.jagrosh.jdautilities.command;
 
 import com.jagrosh.jdautilities.command.impl.AnnotatedModuleCompilerImpl;
 import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
-import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.api.OnlineStatus;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,7 +17,6 @@ import java.util.function.Consumer;
 
 public class CommandClientBuilder {
     private final LinkedList<Command> commands = new LinkedList();
-    private Game game = Game.playing("default");
     private OnlineStatus status = OnlineStatus.ONLINE;
     private String ownerId;
     private String[] coOwnerIds;
@@ -41,7 +39,7 @@ public class CommandClientBuilder {
     private GuildSettingsManager manager = null;
 
     public CommandClient build() {
-        CommandClientImpl client = new CommandClientImpl(this.ownerId, this.coOwnerIds, this.prefix, this.altprefix, this.game, this.status, this.serverInvite, this.success, this.warning, this.error, this.carbonKey, this.botsKey, this.botsOrgKey, new ArrayList<Command>(this.commands), this.useHelp, this.helpConsumer, this.helpWord, this.executor, this.linkedCacheSize, this.compiler, this.manager);
+        CommandClientImpl client = new CommandClientImpl(this.ownerId, this.coOwnerIds, this.prefix, this.altprefix, this.status, this.serverInvite, this.success, this.warning, this.error, this.carbonKey, this.botsKey, this.botsOrgKey, new ArrayList<Command>(this.commands), this.useHelp, this.helpConsumer, this.helpWord, this.executor, this.linkedCacheSize, this.compiler, this.manager);
         if (this.listener != null) {
             client.setListener(this.listener);
         }
@@ -92,16 +90,6 @@ public class CommandClientBuilder {
         this.success = success;
         this.warning = warning;
         this.error = error;
-        return this;
-    }
-
-    public CommandClientBuilder setGame(Game game) {
-        this.game = game;
-        return this;
-    }
-
-    public CommandClientBuilder useDefaultGame() {
-        this.game = Game.playing("default");
         return this;
     }
 

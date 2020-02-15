@@ -7,7 +7,7 @@
 package com.jagrosh.jdautilities.command;
 
 import me.turulix.main.i18n.I18nContext;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.Collection;
 import java.util.LinkedList;

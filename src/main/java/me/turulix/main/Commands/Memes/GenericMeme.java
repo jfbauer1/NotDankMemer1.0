@@ -14,8 +14,8 @@ import me.turulix.main.RegisterStuff;
 import me.turulix.main.UtilClasses.TextUtilities;
 import me.turulix.main.UtilClasses.Utils;
 import me.turulix.main.i18n.I18nContext;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

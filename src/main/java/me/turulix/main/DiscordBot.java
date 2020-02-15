@@ -18,11 +18,11 @@ import me.turulix.main.UtilClasses.OneTimeCode;
 import me.turulix.main.UtilClasses.SubClasses.SubClasses;
 import me.turulix.main.UtilClasses.Utils;
 import me.turulix.main.Webserver.ApiWebServer;
-import net.dv8tion.jda.bot.sharding.DefaultShardManagerBuilder;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.utils.SessionControllerAdapter;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.api.utils.SessionControllerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -151,7 +151,7 @@ public class DiscordBot implements Runnable {
             } else {
                 shardManagerBuilder.setShardsTotal(1);
             }
-            shardManagerBuilder.setGame(Game.playing("Starting bot."));
+            shardManagerBuilder.setActivity(Activity.playing("Starting bot."));
             shardManagerBuilder.setWebsocketFactory(new WebSocketFactory().setVerifyHostname(false));
             try {
                 registerStuff.shardManager = shardManagerBuilder.build();
@@ -208,7 +208,7 @@ public class DiscordBot implements Runnable {
         MinUpdate.schedule(new TimerTask() {
             public void run() {
                 if (started) {
-                    instance.registerStuff.shardManager.setGame(Game.of(Game.GameType.DEFAULT, "on " + instance.registerStuff.shardManager.getGuilds().size() + " servers! | " + instance.registerStuff.commandClient.getPrefix() + "help"));
+                    instance.registerStuff.shardManager.setActivity(Activity.playing("on " + instance.registerStuff.shardManager.getGuilds().size() + " servers! | " + instance.registerStuff.commandClient.getPrefix() + "help"));
                     instance.registerStuff.musicManager.LeaveEmpty();
                 }
             }

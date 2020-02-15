@@ -11,7 +11,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import me.turulix.main.Database.Manager.GuildSettingsDataManager;
 import me.turulix.main.DiscordBot;
 import me.turulix.main.i18n.I18nContext;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.api.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

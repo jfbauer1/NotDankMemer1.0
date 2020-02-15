@@ -11,63 +11,63 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.command.CommandListener;
 import me.turulix.main.Logger;
 import me.turulix.main.UtilClasses.FormatUtil;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.EventListener;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.EventListener;
 import org.jetbrains.annotations.NotNull;
 
 public class CMDListener implements CommandListener, EventListener {
     @Override
-    public void onEvent(@NotNull Event event) {
+    public void onEvent(@NotNull GenericEvent event) {
         switch (event.getClass().getName()) {
-            case "net.dv8tion.jda.core.events.message.MessageReceivedEvent":
+            case "net.dv8tion.jda.api.events.message.MessageReceivedEvent":
                 onMessage((MessageReceivedEvent) event);
                 break;
-            case "net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent":
+            case "net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent":
                 break;
-            case "net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent":
+            case "net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent":
                 break;
-            case "net.dv8tion.jda.core.events.user.update.UserUpdateGameEvent":
+            case "net.dv8tion.jda.api.events.user.update.UserUpdateGameEvent":
                 break;
-            case "net.dv8tion.jda.core.events.user.update.UserUpdateOnlineStatusEvent":
+            case "net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent":
                 break;
-            case "net.dv8tion.jda.core.events.StatusChangeEvent":
+            case "net.dv8tion.jda.api.events.StatusChangeEvent":
                 break;
-            case "net.dv8tion.jda.core.events.http.HttpRequestEvent":
+            case "net.dv8tion.jda.api.events.http.HttpRequestEvent":
                 break;
-            case "net.dv8tion.jda.core.events.guild.GuildReadyEvent":
+            case "net.dv8tion.jda.api.events.guild.GuildReadyEvent":
                 break;
-            case "net.dv8tion.jda.core.events.ReadyEvent":
+            case "net.dv8tion.jda.api.events.ReadyEvent":
                 break;
-            case "net.dv8tion.jda.core.events.user.UserTypingEvent":
+            case "net.dv8tion.jda.api.events.user.UserTypingEvent":
                 break;
-            case "net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent":
+            case "net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent":
                 break;
-            case "net.dv8tion.jda.core.events.channel.priv.PrivateChannelCreateEvent":
+            case "net.dv8tion.jda.api.events.channel.priv.PrivateChannelCreateEvent":
                 break;
-            case "net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent":
+            case "net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent":
                 break;
-            case "net.dv8tion.jda.core.events.message.guild.GuildMessageUpdateEvent":
+            case "net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent":
                 break;
-            case "net.dv8tion.jda.core.events.message.MessageUpdateEvent":
+            case "net.dv8tion.jda.api.events.message.MessageUpdateEvent":
                 break;
-            case "net.dv8tion.jda.core.events.message.guild.GuildMessageEmbedEvent":
+            case "net.dv8tion.jda.api.events.message.guild.GuildMessageEmbedEvent":
                 break;
-            case "net.dv8tion.jda.core.events.message.MessageEmbedEvent":
+            case "net.dv8tion.jda.api.events.message.MessageEmbedEvent":
                 break;
-            case "net.dv8tion.jda.core.events.guild.voice.GuildVoiceSuppressEvent":
+            case "net.dv8tion.jda.api.events.guild.voice.GuildVoiceSuppressEvent":
                 break;
-            case "net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent":
+            case "net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent":
                 break;
-            case "net.dv8tion.jda.core.events.channel.voice.VoiceChannelCreateEvent":
+            case "net.dv8tion.jda.api.events.channel.voice.VoiceChannelCreateEvent":
                 break;
-            case "net.dv8tion.jda.core.events.channel.voice.VoiceChannelDeleteEvent":
+            case "net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent":
                 break;
-            case "net.dv8tion.jda.core.events.guild.voice.GuildVoiceSelfMuteEvent":
+            case "net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfMuteEvent":
                 break;
-            case "net.dv8tion.jda.core.events.guild.voice.GuildVoiceMuteEvent":
+            case "net.dv8tion.jda.api.events.guild.voice.GuildVoiceMuteEvent":
                 break;
             default:
                 Logger.info(event.getClass().getName());
@@ -105,7 +105,7 @@ public class CMDListener implements CommandListener, EventListener {
         if (e.getChannelType().isGuild()) {
             if (e.getMessage().getEmbeds().size() >= 1) {
                 for (@NotNull MessageEmbed embed : e.getMessage().getEmbeds()) {
-                    String message = FormatUtil.removeEscapeChars(embed.toJSONObject().toString());
+                    String message = FormatUtil.removeEscapeChars(embed.toString());
                     Logger.info("[" + e.getGuild().getName() + "] " + "[" + e.getChannel().getName() + "] " + "[EMBED] " + e.getAuthor().getName() + ": " + message);
                 }
             } else {
