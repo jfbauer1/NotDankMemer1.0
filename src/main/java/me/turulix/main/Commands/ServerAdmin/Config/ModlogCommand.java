@@ -13,8 +13,8 @@ import me.turulix.main.DiscordBot;
 import me.turulix.main.Logger;
 import me.turulix.main.UtilClasses.TextUtilities;
 import me.turulix.main.i18n.I18nContext;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 public class ModlogCommand extends Command {
     public ModlogCommand() {

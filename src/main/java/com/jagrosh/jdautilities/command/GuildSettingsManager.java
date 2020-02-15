@@ -6,7 +6,7 @@
 
 package com.jagrosh.jdautilities.command;
 
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 
 import javax.annotation.Nullable;
 

@@ -18,9 +18,9 @@ import me.turulix.main.Commands.Music.Managers.MusicManager;
 import me.turulix.main.Database.Database;
 import me.turulix.main.UtilClasses.Anotations.DankCommand;
 import me.turulix.main.UtilClasses.SubClasses.SubClasses;
-import net.dv8tion.jda.bot.sharding.ShardManager;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.utils.SessionController;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.sharding.ShardManager;
+import net.dv8tion.jda.api.utils.SessionController;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 

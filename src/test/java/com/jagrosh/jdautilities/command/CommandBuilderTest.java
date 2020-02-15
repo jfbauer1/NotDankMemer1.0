@@ -8,7 +8,7 @@ package com.jagrosh.jdautilities.command;
 
 import me.turulix.main.Commands.TestCommand;
 import me.turulix.main.Listeners.TestFailListener;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.api.Permission;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

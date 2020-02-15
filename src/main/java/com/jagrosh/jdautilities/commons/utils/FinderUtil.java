@@ -6,10 +6,10 @@
 
 package com.jagrosh.jdautilities.commons.utils;
 
-import net.dv8tion.jda.bot.sharding.ShardManager;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.utils.cache.SnowflakeCacheView;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.sharding.ShardManager;
+import net.dv8tion.jda.api.utils.cache.SnowflakeCacheView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * A series of query based utilities for finding entities, either globally across all accessible {@link
- * net.dv8tion.jda.core.entities.Guild Guild}s, or locally to a specified Guild.
+ * net.dv8tion.jda.api.entities.Guild Guild}s, or locally to a specified Guild.
  *
  * <p>All methods use a similar priority hierarchy and return an immutable {@link java.util.List List} based on the
  * results.
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * <br>Note that successful results from these are typically
  * {@link java.util.Collections#singletonList(Object) a singleton list}.</li>
  * <li>Direct ID: Query is a number with 17 or more digits, resembling an
- * {@link net.dv8tion.jda.core.entities.ISnowflake Snowflake} ID.</li>
+ * {@link net.dv8tion.jda.api.entities.ISnowflake Snowflake} ID.</li>
  * <li>Exact Match: Query provided is an exact match (case sensitive and complete) to one or more entities.</li>
  * <li>Wrong Case: Query provided is a case-insensitive, but exact, match to the entirety of one or more entities.</li>
  * <li>Starting With: Query provided is an case-insensitive match to the beginning of one or more entities.</li>
@@ -42,9 +42,9 @@ import java.util.stream.Collectors;
  *
  * <b>Shard Manager Usage</b>
  *
- * <br>Methods that query an instance of {@link net.dv8tion.jda.core.JDA JDA} always have two implementations:
+ * <br>Methods that query an instance of {@link net.dv8tion.jda.api.JDA JDA} always have two implementations:
  * <ul>
- * <li><b>Global:</b> Queries a {@link net.dv8tion.jda.bot.sharding.ShardManager ShardManager} if one
+ * <li><b>Global:</b> Queries a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} if one
  * is available, or JDA if one is not.</li>
  *
  * <li><b>Shard:</b>  Always queries the provided instance, and never a ShardManager, even if one
@@ -72,10 +72,10 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link net.dv8tion.jda.core.entities.User
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link net.dv8tion.jda.api.entities.User
      * User}s.<p>
      * <p>
-     * If a {@link net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available this will query across that
+     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
      * instead of the JDA instance.
      *
      * <p>The following special cases are applied in order of listing before the standard search is done:
@@ -94,11 +94,11 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link net.dv8tion.jda.core.entities.User
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link net.dv8tion.jda.api.entities.User
      * User}s.<p>
      * <p>
      * This only queries the instance of JDA, regardless of whether or not a {@link
-     * net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available.
+     * net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
      *
      * <p>The following special cases are applied in order of listing before the standard search is done:
      * <ul>
@@ -119,7 +119,7 @@ public final class FinderUtil {
         Matcher userMention = USER_MENTION.matcher(query);
         Matcher fullRefMatch = FULL_USER_REF.matcher(query);
 
-        ShardManager manager = useShardManager ? jda.asBot().getShardManager() : null;
+        ShardManager manager = useShardManager ? jda.getShardManager() : null;
 
         if (userMention.matches()) {
             User user = manager != null ? manager.getUserById(userMention.group(1)) : jda.getUserById(userMention.group(1));
@@ -153,8 +153,8 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided {@link net.dv8tion.jda.core.entities.Guild Guild} for a banned {@link
-     * net.dv8tion.jda.core.entities.User User}.
+     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for a banned {@link
+     * net.dv8tion.jda.api.entities.User User}.
      *
      * <p>The following special cases are applied in order of listing before the standard search is done:
      * <ul>
@@ -168,12 +168,12 @@ public final class FinderUtil {
      * <p>Unlike the other finder methods, this one has two very unique features that set it apart from the rest:
      * <ul>
      * <li><b>1)</b> In order to get a list of bans that is usable, this method initial retrieves it by usage of
-     * {@link net.dv8tion.jda.core.requests.RestAction#complete() Guild#getBans().complete()}. Because of this, as would
+     * {@link net.dv8tion.jda.api.requests.RestAction#complete() Guild#getBans().complete()}. Because of this, as would
      * be the same expected effect from the other utility methods, this will block the thread it is called in. The
      * difference, however, comes in that this method may have slight variations in return speed, especially when put
      * under higher usage over a shorter period of time.</li>
      * <li><b>2) This method can return {@code null}</b> if and only if an {@link java.lang.Exception Exception} is
-     * thrown while initially getting banned Users via {@link net.dv8tion.jda.core.entities.Guild#getBans()
+     * thrown while initially getting banned Users via {@link Guild#retrieveBanList()} ()
      * Guild#getBans()}.</li>
      * </ul>
      *
@@ -181,12 +181,12 @@ public final class FinderUtil {
      * @param guild The Guild to search for banned Users from
      * @return A possibly-empty {@link java.util.List List} of Users found by the query from the provided JDA instance,
      * or {@code null} if an {@link java.lang.Exception Exception} is thrown while initially getting banned Users.
-     * @see net.dv8tion.jda.core.entities.Guild#getBans() Guild#getBans()
+     * @see Guild#retrieveBanList() () Guild#getBans()
      */
     public static List<User> findBannedUsers(String query, Guild guild) {
         List<User> bans;
         try {
-            bans = guild.getBanList().complete().stream().map(Guild.Ban::getUser).collect(Collectors.toList());
+            bans = guild.retrieveBanList().complete().stream().map(Guild.Ban::getUser).collect(Collectors.toList());
         } catch (Exception e) {
             return null;
         }
@@ -228,8 +228,8 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided {@link net.dv8tion.jda.core.entities.Guild Guild} for {@link
-     * net.dv8tion.jda.core.entities.Member Member}s.
+     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for {@link
+     * net.dv8tion.jda.api.entities.Member Member}s.
      *
      * <p>The following special cases are applied in order of listing before the standard search is done:
      * <ul>
@@ -246,7 +246,7 @@ public final class FinderUtil {
      * Member is added to the returned list. This is important to note, because the returned list may contain exact
      * matches for User's name as well as exact matches for a Member's effective name, with nothing guaranteeing the
      * returns will be exclusively containing matches for one or the other.
-     * <br>Information on effective name can be found in {@link net.dv8tion.jda.core.entities.Member#getEffectiveName()
+     * <br>Information on effective name can be found in {@link net.dv8tion.jda.api.entities.Member#getEffectiveName()
      * Member#getEffectiveName()}.
      *
      * @param query The String query to search by
@@ -291,10 +291,10 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link
-     * net.dv8tion.jda.core.entities.TextChannel TextChannel}s.<p>
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link
+     * net.dv8tion.jda.api.entities.TextChannel TextChannel}s.<p>
      * <p>
-     * If a {@link net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available this will query across that
+     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
      * instead of the JDA instance.
      *
      * <p>The following special case is applied before the standard search is done:
@@ -312,11 +312,11 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link
-     * net.dv8tion.jda.core.entities.TextChannel TextChannel}s.<p>
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link
+     * net.dv8tion.jda.api.entities.TextChannel TextChannel}s.<p>
      * <p>
      * This only queries the instance of JDA, regardless of whether or not a {@link
-     * net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available.
+     * net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
      *
      * <p>The following special case is applied before the standard search is done:
      * <ul>
@@ -333,8 +333,8 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided {@link net.dv8tion.jda.core.entities.Guild Guild} for {@link
-     * net.dv8tion.jda.core.entities.TextChannel TextChannel}s.
+     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for {@link
+     * net.dv8tion.jda.api.entities.TextChannel TextChannel}s.
      *
      * <p>The following special case is applied before the standard search is done:
      * <ul>
@@ -361,7 +361,7 @@ public final class FinderUtil {
     private static List<TextChannel> jdaTextChannelSearch(String query, JDA jda, boolean useShardManager) {
         Matcher channelMention = CHANNEL_MENTION.matcher(query);
 
-        ShardManager manager = useShardManager ? jda.asBot().getShardManager() : null;
+        ShardManager manager = useShardManager ? jda.getShardManager() : null;
 
         if (channelMention.matches()) {
             TextChannel tc = manager != null ? manager.getTextChannelById(channelMention.group(1)) : jda.getTextChannelById(channelMention.group(1));
@@ -394,10 +394,10 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link
-     * net.dv8tion.jda.core.entities.VoiceChannel VoiceChannel}s.<p>
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link
+     * net.dv8tion.jda.api.entities.VoiceChannel VoiceChannel}s.<p>
      * <p>
-     * If a {@link net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available this will query across that
+     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
      * instead of the JDA instance.
      *
      * <p>The standard search does not follow any special cases.
@@ -412,11 +412,11 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link
-     * net.dv8tion.jda.core.entities.VoiceChannel VoiceChannel}s.<p>
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link
+     * net.dv8tion.jda.api.entities.VoiceChannel VoiceChannel}s.<p>
      * <p>
      * This only queries the instance of JDA, regardless of whether or not a {@link
-     * net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available.
+     * net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
      *
      * <p>The standard search does not follow any special cases.
      *
@@ -430,8 +430,8 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided {@link net.dv8tion.jda.core.entities.Guild Guild} for {@link
-     * net.dv8tion.jda.core.entities.VoiceChannel VoiceChannel}s.
+     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for {@link
+     * net.dv8tion.jda.api.entities.VoiceChannel VoiceChannel}s.
      *
      * <p>The standard search does not follow any special cases.
      *
@@ -448,7 +448,7 @@ public final class FinderUtil {
     }
 
     private static List<VoiceChannel> jdaVoiceChannelSearch(String query, JDA jda, boolean useShardManager) {
-        ShardManager manager = useShardManager ? jda.asBot().getShardManager() : null;
+        ShardManager manager = useShardManager ? jda.getShardManager() : null;
 
         if (DISCORD_ID.matcher(query).matches()) {
             VoiceChannel vc = manager != null ? manager.getVoiceChannelById(query) : jda.getVoiceChannelById(query);
@@ -478,10 +478,10 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link
-     * net.dv8tion.jda.core.entities.Category Categories}.<p>
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link
+     * net.dv8tion.jda.api.entities.Category Categories}.<p>
      * <p>
-     * If a {@link net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available this will query across that
+     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
      * instead of the JDA instance.
      *
      * <p>The standard search does not follow any special cases.
@@ -496,11 +496,11 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link
-     * net.dv8tion.jda.core.entities.Category Categories}.<p>
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link
+     * net.dv8tion.jda.api.entities.Category Categories}.<p>
      * <p>
      * This only queries the instance of JDA, regardless of whether or not a {@link
-     * net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available.
+     * net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
      *
      * <p>The standard search does not follow any special cases.
      *
@@ -514,8 +514,8 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided {@link net.dv8tion.jda.core.entities.Guild Guild} for {@link
-     * net.dv8tion.jda.core.entities.Category Categories}.
+     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for {@link
+     * net.dv8tion.jda.api.entities.Category Categories}.
      *
      * <p>The standard search does not follow any special cases.
      *
@@ -533,7 +533,7 @@ public final class FinderUtil {
     }
 
     private static List<Category> jdaCategorySearch(String query, JDA jda, boolean useShardManager) {
-        ShardManager manager = useShardManager ? jda.asBot().getShardManager() : null;
+        ShardManager manager = useShardManager ? jda.getShardManager() : null;
 
         if (DISCORD_ID.matcher(query).matches()) {
             Category cat = manager != null ? manager.getCategoryById(query) : jda.getCategoryById(query);
@@ -563,8 +563,8 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided {@link net.dv8tion.jda.core.entities.Guild Guild} for {@link
-     * net.dv8tion.jda.core.entities.Role Role}s.
+     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for {@link
+     * net.dv8tion.jda.api.entities.Role Role}s.
      *
      * <p>The following special case is applied before the standard search is done:
      * <ul>
@@ -603,17 +603,17 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link
-     * net.dv8tion.jda.core.entities.Emote Emote}s.<p>
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link
+     * net.dv8tion.jda.api.entities.Emote Emote}s.<p>
      * <p>
-     * If a {@link net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available this will query across that
+     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
      * instead of the JDA instance.
      *
      * <p>The following special case is applied before the standard search is done:
      * <ul>
      * <li>Emote Mention: Query provided matches a :emote: mention (more specifically {@literal <:emoteName:emoteID>}).
      * <br>Note: This only returns here if the emote is <b>valid</b>. Validity being the ID retrieves a non-null
-     * Emote and that the {@link net.dv8tion.jda.core.entities.Emote#getName() name} of the Emote is equal to the name
+     * Emote and that the {@link net.dv8tion.jda.api.entities.Emote#getName() name} of the Emote is equal to the name
      * found in the query.</li>
      * </ul>
      *
@@ -626,17 +626,17 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided instance of {@link net.dv8tion.jda.core.JDA JDA} for {@link
-     * net.dv8tion.jda.core.entities.Emote Emote}s.<p>
+     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link
+     * net.dv8tion.jda.api.entities.Emote Emote}s.<p>
      * <p>
      * This only queries the instance of JDA, regardless of whether or not a {@link
-     * net.dv8tion.jda.bot.sharding.ShardManager ShardManager} is available.
+     * net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
      *
      * <p>The following special case is applied before the standard search is done:
      * <ul>
      * <li>Emote Mention: Query provided matches a :emote: mention (more specifically {@literal <:emoteName:emoteID>}).
      * <br>Note: This only returns here if the emote is <b>valid</b>. Validity being the ID retrieves a non-null
-     * Emote and that the {@link net.dv8tion.jda.core.entities.Emote#getName() name} of the Emote is equal to the name
+     * Emote and that the {@link net.dv8tion.jda.api.entities.Emote#getName() name} of the Emote is equal to the name
      * found in the query.</li>
      * </ul>
      *
@@ -649,14 +649,14 @@ public final class FinderUtil {
     }
 
     /**
-     * Queries a provided {@link net.dv8tion.jda.core.entities.Guild Guild} for {@link
-     * net.dv8tion.jda.core.entities.Emote Emote}s.
+     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for {@link
+     * net.dv8tion.jda.api.entities.Emote Emote}s.
      *
      * <p>The following special case is applied before the standard search is done:
      * <ul>
      * <li>Emote Mention: Query provided matches a :emote: mention (more specifically {@literal <:emoteName:emoteID>}).
      * <br>Note: This only returns here if the emote is <b>valid</b>. Validity being the ID retrieves a non-null
-     * Emote and that the {@link net.dv8tion.jda.core.entities.Emote#getName() name} of the Emote is equal to the name
+     * Emote and that the {@link net.dv8tion.jda.api.entities.Emote#getName() name} of the Emote is equal to the name
      * found in the query.</li>
      * </ul>
      *
@@ -682,7 +682,7 @@ public final class FinderUtil {
     private static List<Emote> jdaFindEmotes(String query, JDA jda, boolean useShardManager) {
         Matcher mentionMatcher = EMOTE_MENTION.matcher(query);
 
-        ShardManager manager = useShardManager ? jda.asBot().getShardManager() : null;
+        ShardManager manager = useShardManager ? jda.getShardManager() : null;
 
         if (DISCORD_ID.matcher(query).matches()) {
             Emote emote = manager != null ? manager.getEmoteById(query) : jda.getEmoteById(query);

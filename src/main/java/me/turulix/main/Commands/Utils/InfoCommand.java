@@ -12,10 +12,10 @@ import me.turulix.main.DiscordBot;
 import me.turulix.main.UtilClasses.Anotations.DankCommand;
 import me.turulix.main.UtilClasses.TextUtilities;
 import me.turulix.main.i18n.I18nContext;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -55,7 +55,7 @@ public class InfoCommand extends Command {
             String str = event.getArgs().split(" ")[0];
             if (str.matches("<:.*:\\d+>")) {
                 String id = str.replaceAll("<:.*:(\\d+)>", "$1");
-                net.dv8tion.jda.core.entities.Emote emote = DiscordBot.instance.registerStuff.shardManager.getEmoteById(id);
+                net.dv8tion.jda.api.entities.Emote emote = DiscordBot.instance.registerStuff.shardManager.getEmoteById(id);
                 if (emote == null) {
                     event.reply(DiscordBot.instance.registerStuff.commandClient.getWarning() + "Unknown emote:\n" + "ID: **" + id + "**\n" + "Guild: Unknown\n" + "URL: https://discordcdn.com/emojis/" + id + ".png");
                     return;
@@ -108,8 +108,8 @@ public class InfoCommand extends Command {
 
             String NAME = memb.getEffectiveName();
             @NotNull String TAG = memb.getUser().getName() + "#" + memb.getUser().getDiscriminator();
-            @NotNull String GUILD_JOIN_DATE = memb.getJoinDate().format(DateTimeFormatter.RFC_1123_DATE_TIME);
-            @NotNull String DISCORD_JOINED_DATE = memb.getUser().getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+            @NotNull String GUILD_JOIN_DATE = memb.getTimeJoined().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+            @NotNull String DISCORD_JOINED_DATE = memb.getUser().getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME);
             String ID = memb.getUser().getId();
             String STATUS = memb.getOnlineStatus().getKey();
             @NotNull StringBuilder ROLES = new StringBuilder();
@@ -117,7 +117,7 @@ public class InfoCommand extends Command {
             String AVATAR = memb.getUser().getAvatarUrl();
             String GAME;
             try {
-                GAME = memb.getGame().getName();
+                GAME = memb.getOnlineStatus().name();
             } catch (Exception e2) {
                 GAME = "-/-";
             }

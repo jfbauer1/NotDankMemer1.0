@@ -12,7 +12,7 @@ import com.mongodb.client.model.Filters;
 import me.turulix.main.DiscordBot;
 import me.turulix.main.UtilClasses.Anotations.DankCommand;
 import me.turulix.main.i18n.I18nContext;
-import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.api.Permission;
 import org.bson.BsonDateTime;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,6 @@ public class TestCommand extends Command {
         update(Filters.eq("_id", event.getAuthor().getIdLong()), "voteDate", new BsonDateTime(new Date().getTime()));
 
         Date timestamp = getDocument(Filters.eq("_id", event.getAuthor().getIdLong())).getDate("voteDate");
-
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(timestamp);
